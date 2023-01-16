@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <title>Socket.io</title>
+</head>
+<style>
+    #chat{
+        background-color: rgb(238, 238, 238);
+        max-height: 500px;
+        min-height: 500px;
+        overflow-y: scroll;
+    }
+</style>
+<body>
+   <h1>Chat - sim</h1>
+   <div id="chat">
+
+   </div>
+   <input type="text" id="msg" placeholder="Mensagem" class="form-control"><br>
+   <input type="text" id="username" placeholder="Seu username" class="form-control"><br>
+   <div class="d-grid gap-2">
+    <button class="btn btn-primary" type="button" onclick="send()">Enviar</button>
+   </div>
+   
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+<script>
+    var socket = io("http://localhost:8080")
+
+    socket.on("disconnect",() => {
+        console.log("Desconectado")
+    })
+    
+    socket.on("showmsg", (data) => {
+        console.log(data)
+        var chat = document.getElementById("chat")
+        var p = document.createElement("p")
+        p.innerHTML = data.username + ": " + data.msg
+        chat.append(p)
+    })
+
+    function send(){
+        var msgField = document.getElementById("msg")
+        var userField = document.getElementById("username")
+
+        var msg = msgField.value
+        var username = userField.value
+
+        socket.emit("msg",{msg: msg, username: username})
+    }
+
+  
+</script>
+</html>
